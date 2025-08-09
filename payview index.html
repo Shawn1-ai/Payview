@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Payview.zm - Start Your Financial Career</title>
+<meta name="description" content="Join Payview.zm and start your financial career. Create an account, activate via Airtel Money, complete tasks and earn money." />
+<style>
+  /* Basic styling */
+  body {
+    margin:0; font-family: Arial, sans-serif; background: linear-gradient(135deg,#1e3c72,#2a5298);
+    color:#222; min-height:100vh; display:flex; justify-content:center; align-items:center; padding:1rem;
+  }
+  .container {
+    background:#fff; max-width:420px; width:100%; border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,0.25);
+    padding:2rem;
+  }
+  h1,h2 {text-align:center; color:#1e3c72; user-select:none;}
+  p.description {text-align:center; margin-bottom:1.5rem; font-size:1.1rem;}
+  input, select, button {
+    width:100%; padding:0.7rem 1rem; margin:0.4rem 0 1.2rem 0; font-size:1rem; border:2px solid #ccc; border-radius:8px;
+    transition:border-color 0.3s ease;
+  }
+  input:focus, select:focus {
+    border-color:#1e3c72; outline:none; box-shadow:0 0 8px #1e3c72aa;
+  }
+  button {
+    background:#1e3c72; color:#fff; border:none; cursor:pointer; font-weight:bold; user-select:none;
+  }
+  button:hover {
+    background:#144a86;
+  }
+  button:disabled {
+    background:#aaa; cursor:not-allowed;
+  }
+  .toggle-password {
+    position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+    background:none; border:none; cursor:pointer; color:#1e3c72; font-weight:bold;
+  }
+  .password-wrapper {position:relative;}
+  .airtel-container {
+    display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-bottom:1.5rem;
+  }
+  .airtel-logo {
+    width:40px; height:auto;
+  }
+  .flag-zambia {
+    display:block; margin: 0 auto 1.5rem; width:48px; border-radius:6px;
+  }
+  .balance {
+    font-weight:bold; font-size:1.3rem; text-align:center; margin-bottom:1rem; user-select:none;
+  }
+  .notice {
+    background:#e1f5fe; border-left:6px solid #039be5; padding:1rem; margin-bottom:1.5rem; color:#0277bd; font-weight:600; border-radius:5px; user-select:none;
+  }
+  footer {
+    text-align:center; font-size:13px; color:#bbb; margin-top:1.5rem; user-select:none;
+  }
+  .footer-links a {
+    margin:0 0.5rem; color:#1e3c72; text-decoration:none;
+  }
+  .footer-links a:hover {
+    text-decoration:underline;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Zambia.svg" alt="Zambian Flag" class="flag-zambia" draggable="false" />
+
+  <h1>Payview.zm</h1>
+  <p class="description">Start your financial career now and make money!</p>
+
+  <!-- Create Account -->
+  <section id="create-section" aria-label="Create account section">
+    <h2>Create Account</h2>
+    <input type="text" id="fullName" placeholder="Full Name" autocomplete="name" required />
+    <input type="email" id="email" placeholder="Email" autocomplete="email" required />
+    <input type="text" id="phone" placeholder="Phone Number (e.g. 097XXXXXXX)" autocomplete="tel" required />
+    <div class="password-wrapper">
+      <input type="password" id="password" placeholder="Password" autocomplete="new-password" required />
+      <button type="button" class="toggle-password" aria-label="Toggle password visibility">Show</button>
+    </div>
+    <select id="age" required>
+      <option value="">Select Age</option>
+      <!-- Will populate by JS -->
+    </select>
+    <select id="country" required>
+      <option value="">Select Country</option>
+      <option value="Zambia" selected>Zambia</option>
+      <option value="Other">Other</option>
+    </select>
+    <div class="airtel-container" aria-live="polite">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Airtel_logo.svg/120px-Airtel_logo.svg.png" alt="Airtel Logo" class="airtel-logo" />
+      <p style="margin:0;">Send K50 to Airtel Money on <strong>0775136774 (Syapaka Mary)</strong> to activate your account</p>
+    </div>
+    <button id="createAccountBtn">Create Account</button>
+  </section>
+
+  <!-- Activation -->
+  <section id="activate-section" aria-label="Activate account section" style="display:none;">
+    <h2>Activate Account</h2>
+    <p class="notice">Please send <strong>K50</strong> via Airtel Money to <strong>0775136774 (Syapaka Mary)</strong>.</p>
+    <label for="paymentScreenshot">Upload Payment Screenshot</label>
+    <input type="file" id="paymentScreenshot" accept="image/*" />
+    <button id="activateAccountBtn" disabled>Activate Now</button>
+  </section>
+
+  <!-- Login -->
+  <section id="login-section" aria-label="Login section" style="display:none;">
+    <h2>Login</h2>
+    <input type="text" id="loginPhone" placeholder="Phone Number" autocomplete="tel" required />
+    <div class="password-wrapper">
+      <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required />
+      <button type="button" class="toggle-password" aria-label="Toggle password visibility">Show</button>
+    </div>
+    <button id="loginBtn">Login</button>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard-section" aria-label="Dashboard" style="display:none;">
+    <h2>Your Dashboard</h2>
+    <p class="balance">Balance: K<span id="balance">0</span></p>
+    <p>Referrals: <span id="referralsCount">0</span></p>
+    <button id="taskBtn">Complete Task (+K50)</button>
+    <button id="withdrawBtn" disabled>Withdraw (Min K600 & 10 referrals)</button>
+    <button id="logoutBtn" style="background:#dc3545; margin-top:1rem;">Logout</button>
+  </section>
+
+  <footer>
+    Powered by <strong>Toughshot</strong><br/>
+    <a href="#" id="termsLink">Terms of Service</a> |
+    <a href="#" id="privacyLink">Privacy Policy</a> |
+    <a href="#" id="contactLink">Contact Us</a><br/>
+    Contact Number: 0775136774
+  </footer>
+
+</div>
+
+<script>
+  (() => {
+    // Elements
+    const createSection = document.getElementById('create-section');
+    const activateSection = document.getElementById('activate-section');
+    const loginSection = document.getElementById('login-section');
+    const dashboardSection = document.getElementById('dashboard-section');
+
+    const fullNameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const passwordInput = document.getElementById('password');
+    const ageSelect = document.getElementById('age');
+    const countrySelect = document.getElementById('country');
+
+    const paymentScreenshotInput = document.getElementById('paymentScreenshot');
+    const activateAccountBtn = document.getElementById('activateAccountBtn');
+
+    const loginPhoneInput = document.getElementById('loginPhone');
+    const loginPasswordInput = document.getElementById('loginPassword');
+
+    const createAccountBtn = document.getElementById('createAccountBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const taskBtn = document.getElementById('taskBtn');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+
+    const balanceSpan = document.getElementById('balance');
+    const referralsSpan = document.getElementById('referralsCount');
+
+    // Password toggles
+    function setupPasswordToggles(){
+      document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const pwInput = btn.previousElementSibling;
+          if(pwInput.type === 'password'){
+            pwInput.type = 'text';
+            btn.textContent = 'Hide';
+          } else {
+            pwInput.type = 'password';
+            btn.textContent = 'Show';
+          }
+        });
+      });
+    }
+    setupPasswordToggles();
+
+    // Populate age select (18-80)
+    for(let i=18; i<=80; i++){
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = i;
+      ageSelect.appendChild(opt);
+    }
+
+    // User DB simulation (localStorage)
+    // users stored as array of objects {fullName,email,phone,password,age,country,activated, balance, referrals, tasksDone, maxReached}
+
+    function getUsers(){
+      return JSON.parse(localStorage.getItem('payviewUsers') || '[]');
+    }
+    function saveUsers(users){
+      localStorage.setItem('payviewUsers', JSON.stringify(users));
+    }
+
+    // Current logged in user phone
+    let currentUserPhone = null;
+
+    // Find user by phone
+    function findUser(phone){
+      const users = getUsers();
+      return users.find(u => u.phone === phone);
+    }
+
+    // Save user
+    function saveUser(user){
+      let users = getUsers();
+      const idx = users.findIndex(u => u.phone === user.phone);
+      if(idx === -1){
+        users.push(user);
+      } else {
+        users[idx] = user;
+      }
+      saveUsers(users);
+    }
+
+    // Reset forms
+    function resetCreateForm(){
+      fullNameInput.value = '';
+      emailInput.value = '';
+      phoneInput.value = '';
+      passwordInput.value = '';
+      ageSelect.value = '';
+      countrySelect.value = 'Zambia';
+    }
+
+    // Validate create account inputs
+    function validateCreate(){
+      if(!fullNameInput.value.trim()) return alert('Enter your full name.');
+      if(!emailInput.value.trim() || !emailInput.value.includes('@')) return alert('Enter a valid email.');
+      if(!phoneInput.value.trim() || phoneInput.value.length < 8) return alert('Enter a valid phone number.');
+      if(!passwordInput.value.trim() || passwordInput.value.length < 6) return alert('Password must be at least 6 characters.');
+      if(!ageSelect.value) return alert('Select your age.');
+      if(!countrySelect.value) return alert('Select your country.');
+      return true;
+    }
+
+    // Event: Create account
+    createAccountBtn.addEventListener('click', () => {
+      if(!validateCreate()) return;
+
+      if(findUser(phoneInput.value)){
+        alert('Phone number already registered, please login.');
+        return;
+      }
+
+      // Save user with activated:false and zero balance/referrals
+      const user = {
+        fullName: fullNameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        password: passwordInput.value,
+        age: ageSelect.value,
+        country: countrySelect.value,
+        activated: false,
+        balance: 0,
+        referrals: 0,
+        tasksDone: 0,
+        maxReached: false
+      };
+      saveUser(user);
+      alert('Account created! Now activate by sending K50 and uploading payment proof.');
+
+      // Show activate section
+      currentUserPhone = user.phone;
+      resetCreateForm();
+      showSection('activate');
+    });
+
+    // Enable activate button if screenshot uploaded
+    paymentScreenshotInput.addEventListener('change', () => {
+      activateAccountBtn.disabled = paymentScreenshotInput.files.length === 0;
+    });
+
+    // Event: Activate account
+    activateAccountBtn.addEventListener('click', () => {
+      if(paymentScreenshotInput.files.length === 0){
+        alert('Please upload a payment screenshot.');
+        return;
+      }
+      // For demo, we just mark activated without real payment verification
+      const user = findUser(currentUserPhone);
+      if(!user){
+        alert('User not found.');
+        return;
+      }
+      user.activated = true;
+      saveUser(user);
+      alert('Account activated! You can now login.');
+      paymentScreenshotInput.value = '';
+      activateAccountBtn.disabled = true;
+      showSection('login');
+    });
+
+    // Event: Login
+    loginBtn.addEventListener('click', () => {
+      const phone = loginPhoneInput.value.trim();
+      const password = loginPasswordInput.value;
+      if(!phone || !password){
+        alert('Enter phone and password.');
+        return;
+      }
+      const user = findUser(phone);
+      if(!user){
+        alert('User not found. Please create an account.');
+        return;
+      }
+      if(user.password !== password){
+        alert('Incorrect password.');
+        return;
+      }
+      currentUserPhone = phone;
+
+      if(!user.activated){
+        alert('Please activate your account first.');
+        showSection('activate');
+        return;
+      }
+      if(user.maxReached){
+        alert('Your account has reached the maximum balance limit and is disabled.');
+        return;
+      }
+      loginPhoneInput.value = '';
+      loginPasswordInput.value = '';
+      updateDashboard(user);
+      showSection('dashboard');
+    });
+
+    // Update dashboard info
+    function updateDashboard(user){
+      balanceSpan.textContent = user.balance;
+      referralsSpan.textContent = user.referrals;
+      // Enable withdraw only if balance >= 600 and referrals >= 10
+      if(user.balance >= 600 && user.referrals >= 10){
+        withdrawBtn.disabled = false;
+      } else {
+        withdrawBtn.disabled = true;
+      }
+      // Disable task button if maxReached
+      taskBtn.disabled = user.maxReached;
+    }
+
+    // Event: Logout
+    logoutBtn.addEventListener('click', () => {
+      currentUserPhone = null;
+      showSection('login');
+    });
+
+    // Event: Complete Task (+K50, once per task only)
+    taskBtn.addEventListener('click', () => {
+      const user = findUser(currentUserPhone);
+      if(!user) return alert('User not found.');
+      if(user.maxReached) return alert('Your account is disabled.');
+      if(user.tasksDone >= 1) return alert('You can only complete this task once.');
+
+      user.balance += 50;
+      user.tasksDone++;
+      if(user.balance >= 3310){
+        user.maxReached = true;
+        alert('Congrats! You reached max balance and your account is now disabled.');
+      }
+      saveUser(user);
+      updateDashboard(user);
+    });
+
+    // Event: Withdraw
+    withdrawBtn.addEventListener('click', () => {
+      const user = findUser(currentUserPhone);
+      if(!user) return alert('User not found.');
+
+      if(user.balance < 600 || user.referrals < 10){
+        alert('You need at least K600 balance and 10 referrals to withdraw.');
+        return;
+      }
+      alert('Withdrawal request received. Please follow up for payment processing.');
+      // For simulation: deduct 600 and reset referrals
+      user.balance -= 600;
+      user.referrals = 0;
+      saveUser(user);
+      updateDashboard(user);
+    });
+
+    // Show/hide sections helper
+    function showSection(section){
+      createSection.style.display = 'none';
+      activateSection.style.display = 'none';
+      loginSection.style.display = 'none';
+      dashboardSection.style.display = 'none';
+      if(section === 'create') createSection.style.display = 'block';
+      else if(section === 'activate') activateSection.style.display = 'block';
+      else if(section === 'login') loginSection.style.display = 'block';
+      else if(section === 'dashboard') dashboardSection.style.display = 'block';
+    }
+
+    // Show create account initially
+    showSection('create');
+
+    // Terms, Privacy, Contact modals - simple alert for demo
+    document.getElementById('termsLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      alert(`Terms of Service\n\nThis is a demo website. Use responsibly.`);
+    });
+    document.getElementById('privacyLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      alert(`Privacy Policy\n\nYour data is stored only locally in your browser.`);
+    });
+    document.getElementById('contactLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      alert(`Contact Us\n\nPhone: 0775136774\nEmail: support@payview.zm`);
+    });
+
+  })();
+</script>
+
+</body>
+</html>
